@@ -15,7 +15,6 @@ temp_from_moredata/
 original_new_fifty_data/
 FPL data_50/
 *.png
-*.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
