@@ -28,5 +28,5 @@ $ python display.py
 This displays two results in result file. You will get the result of Figure 7.
 
 # Acknowledgement
- Develped by Hyeongjun Noh
+ Develped by -
  Hyeongjun Noh nhj12074@unist.ac.kr, Jimin Lee jiminlee@unist.ac.kr, Eisung Yoon esyoon@unist.ac.kr
