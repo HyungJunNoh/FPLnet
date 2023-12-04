@@ -6,3 +6,9 @@
 $ git clone https://github.com/HyungJunNoh/FPLnet.git
 $ cd FPLnet
 ```
+
+# Requirements
+- You can pip install by
+```
+$ pip install -r requirements.txt
+```
