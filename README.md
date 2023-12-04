@@ -14,6 +14,19 @@ $ cd FPLnet
 $ pip install -r requirements.txt
 ```
 
+# Run
+- You can run by
+```
+$ python run.py
+```
+This will make new file name $result$ and you can get the result of Figure 4, Figure 5, and Figure 6.
+This code loads trained model and run the model with test datasets.
+Then, run
+```
+$ python display.py
+```
+This displays two results in result file. You will get the result of Figure 7.
+
 # Acknowledgement
  Develped by Hyeongjun Noh - submission for Nature communication, December, 2023.
  This code is private and not intended for public distribution. 
