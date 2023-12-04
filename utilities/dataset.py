@@ -1,9 +1,11 @@
+# Develped by Hyeongjun Noh - submission for Nature communication, December, 2023.
+# This code is private and not intended for public distribution. 
+# Any unauthorized actions including sharing, distribution, or modification without the explicit permission of the author are strictly prohibited.
+# Hyeongjun Noh nhj12074@unist.ac.kr, Jimin Lee jiminlee@unist.ac.kr, Eisung Yoon esyoon@unist.ac.kr
 import os
 import numpy as np
-from utilities.util import *
-
 import torch
-#import torch.nn as nn
+from utilities.util import *
 
 torch.set_default_dtype(torch.float64)
 # Data loader

@@ -1,34 +1,21 @@
-# import libraries
+# Develped by Hyeongjun Noh - submission for Nature communication, December, 2023.
+# This code is private and not intended for public distribution. 
+# Any unauthorized actions including sharing, distribution, or modification without the explicit permission of the author are strictly prohibited.
+# Hyeongjun Noh nhj12074@unist.ac.kr, Jimin Lee jiminlee@unist.ac.kr, Eisung Yoon esyoon@unist.ac.kr
 import argparse
-#from doctest import testfile
-
 import os
-#from turtle import st
 import numpy as np
 import math
-#from pyparsing import lineStart
-
 import torch
 import torch.nn as nn
-
+import matplotlib.pyplot as plt
+from torchvision import transforms
 from torch.utils.data import DataLoader
-#from torch.utils.tensorboard import SummaryWriter
+from tqdm import tqdm
 
 from utilities.model import UNet
 from utilities.dataset import *
 from utilities.util import *
-
-import matplotlib.pyplot as plt
-#from matplotlib.ticker import ScalarFormatter
-
-from torchvision import transforms
-#, datasets
-
-#import time
-from tqdm import tqdm
-
-#import smtplib
-#from email.mime.text import MIMEText
 
 torch.set_default_dtype(torch.float64)
 # Parser
@@ -38,50 +25,22 @@ parser = argparse.ArgumentParser(description="Run FPL-net",
 parser.add_argument("--lr", default=0.0005, type=float, dest="lr")
 parser.add_argument("--batch_size", default=199, type=int, dest="batch_size")
 parser.add_argument("--num_epoch", default=5000, type=int, dest="num_epoch")
-
-#parser.add_argument("--data_dir", default="./FPL_116", type=str, dest="data_dir")
-
-#parser.add_argument("--mode", default="test", type=str, dest="mode")
-#parser.add_argument("--train_continue", default="on", type=str, dest="train_continue")
-#parser.add_argument("--gpu_parallel", default="off", type=str, dest="gpu_parallel")
 parser.add_argument("--gpu_num", default="0", type=int, dest="gpu_num")
-#parser.add_argument("--early_stopping", default="5000", type=int, dest="early_stopping")
-
 args = parser.parse_args()
 
 # set training parameters
 lr = args.lr
 batch_size = args.batch_size
 num_epoch = args.num_epoch
-
-#data_dir = args.data_dir
-
-#mode = args.mode
-#train_continue = args.train_continue
-#gpu_parallel = args.gpu_parallel
 GPU_NUM = args.gpu_num
-#patience = args.early_stopping
 
 device = torch.device(f'cuda:{GPU_NUM}' if torch.cuda.is_available() else 'cpu')
-'''
-lst_data = os.listdir(data_dir)
-ckpt_list = [f for f in lst_data if f.startswith('checkpoint_%s'%名前)]
-#log_list = [f for f in lst_data if f.startswith('log_%s'%名前)]
-result_list = [f for f in lst_data if f.startswith('result_%s'%名前)]
-ckpt_list.sort(); log_list.sort(); result_list.sort()
-ckpt_dir = os.path.join(data_dir, ckpt_list[-1])
-#log_dir = os.path.join(data_dir, log_list[-1])
-result_dir = os.path.join(data_dir, result_list[-1])
-'''
-
 ckpt_dir = './utilities'
 result_dir = './result'
 
 # Make dir
 if not os.path.exists(result_dir):
-	os.makedirs(os.path.join(result_dir, 'png'))
 	os.makedirs(os.path.join(result_dir, 'numpy'))
-
 
 transform = transforms.Compose([Normalization(min=0.00, max=770.0), ToTensor()])
 dataset_test = Dataset(data_dir='./dataset', transform=transform)
@@ -129,9 +88,6 @@ fn_norm = lambda x, min, max: (x-min)/(max-min)
 # Training
 st_epoch = 0
 MSE_best = 10000.0
-
-# Initializing early_stopping object
-#early_stopping = EarlyStopping(patience = patience, verbose = False)
 
 # Train mode
 if MSE_best == -4259545677:
@@ -288,54 +244,15 @@ else:
 					input_for_subtract = save_input_for_subtract[0]
 
 		print('Total data point: ', len(energy_error))
-		print(max(density_error), max(momentum_error), max(energy_error))
 		print(len(avg_psnr), ' Avg PSNR: ', np.mean(avg_psnr))
 		avg_psnr = []
-		# time series plot		
-		t = range(1,200)
-		plt.plot(t, Time_energy, color='#6515E8', linestyle='--', label='$T_{\parallel}/T_{\perp}=0.795, E$')
-		plt.plot(t, Time_density, color='#FFBE3F', linestyle='--', label='$T_{\parallel}/T_{\perp}=0.795, n$')
-		plt.plot(t, Time_momentum, color='#FF0074', linestyle='--', label='$T_{\parallel}/T_{\perp}=0.795, P$')
-		plt.plot(t, Time_energy2, color='#6515E8', linestyle='solid', label='$T_{\parallel}/T_{\perp}=1.98, E$')
-		plt.plot(t, Time_density2, color='#FFBE3F', linestyle='solid', label='$T_{\parallel}/T_{\perp}=1.98, n$')
-		plt.plot(t, Time_momentum2, color='#FF0074', linestyle='solid', label='$T_{\parallel}/T_{\perp}=1.98, P$')
-		plt.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
-		plt.axis([0,200,0,0.0006])
-		plt.legend()
-		plt.xlabel('Time Step')
-		plt.ylabel('Error')
-		plt.show()
-
-		# Temperature plot
-		t = range(1,198)
-		plt.plot(t, Time_TZ_target[:-2], color='black', linestyle='solid', label='$T_{\parallel}^{Ground Truth}$')
-		plt.plot(t, Time_TR_target[:-2], color='black', linestyle='solid', label='$T_{\perp}^{Ground Truth}$')
-		plt.plot(t, Time_TZ[:-2], color='red', linestyle='--', label='$T_{\parallel}$')
-		plt.plot(t, Time_TR[:-2], color='blue', linestyle='--', label='$T_{\perp}$')
-		plt.xlabel('Time Step')
-		plt.ylabel('Temperature [eV]')
-		plt.legend()
-		plt.show()
-		plt.xlabel('Time Step')
-		plt.ylabel('Temperature [eV]')
-		Differ_one = np.array(Time_TZ_target[:-2])-np.array(Time_TZ[:-2])
-		Differ_two = np.array(Time_TR_target[:-2])-np.array(Time_TR[:-2])
-		print(np.max(np.abs(Differ_one)))
-		print(np.max(np.abs(Differ_two)))
-		t = range(1,200)
-		plt.plot(t, Time_TZ2, color='#6515E8', linestyle='--', label='1.98$T_{\parallel}$')
-		plt.plot(t, Time_TR2, color='#FFBE3F', linestyle='--', label='1.98$T_{\perp}$')
-		plt.plot(t, Time_TZ_target2, color='#6515E8', linestyle='solid', label='1.98$T_{\parallel}^{Ground Truth}$')
-		plt.plot(t, Time_TR_target2, color='#FFBE3F', linestyle='solid', label='1.98$T_{\perp}^{Ground Truth}$')
-		plt.legend()
-		plt.show()
-
+		# Temperature plot - Figure 4
 		bins2 = np.logspace(-10,-2,num=100)
 		plt.hist(density_error, bins2, rwidth=0.8, color='red', alpha=0.5)
 		plt.xscale("log")
 		plt.xticks(fontsize = 14)
 		plt.yticks(fontsize = 14)
-		plt.title("Mean : %s Median : %s"%( format(np.mean(np.abs(density_error)), '.4E'), format(np.median(np.abs(density_error)), '4E')))
+		plt.title("Density error, Mean : %s Median : %s"%( format(np.mean(np.abs(density_error)), '.4E'), format(np.median(np.abs(density_error)), '4E')))
 		plt.axvline(np.mean(np.abs(density_error)), color='red', linestyle='dashed', linewidth=1)
 		plt.axvline(np.median(np.abs(density_error)), color='blue', linestyle='dashed', linewidth=1)
 		plt.show(); plt.clf()
@@ -345,7 +262,7 @@ else:
 		plt.xscale("log")
 		plt.xticks(fontsize = 14)
 		plt.yticks(fontsize = 14)
-		plt.title("Mean : %s Median : %s"%( format(np.mean(np.abs(momentum_error)), '.4E'), format(np.median(np.abs(momentum_error)), '4E')))
+		plt.title("Momentum error, Mean : %s Median : %s"%( format(np.mean(np.abs(momentum_error)), '.4E'), format(np.median(np.abs(momentum_error)), '4E')))
 		plt.axvline(np.mean(np.abs(momentum_error)), color='red', linestyle='dashed', linewidth=1)
 		plt.axvline(np.median(np.abs(momentum_error)), color='blue', linestyle='dashed', linewidth=1)
 		plt.show(); plt.clf()
@@ -355,7 +272,7 @@ else:
 		plt.xscale("log")
 		plt.xticks(fontsize = 14)
 		plt.yticks(fontsize = 14)
-		plt.title("Mean : %s Median : %s"%( format(np.mean(np.abs(energy_error)), '.4E'), format(np.median(np.abs(energy_error)), '4E')))
+		plt.title("Energy error, Mean : %s Median : %s"%( format(np.mean(np.abs(energy_error)), '.4E'), format(np.median(np.abs(energy_error)), '4E')))
 		plt.axvline(np.mean(np.abs(energy_error)), color='red', linestyle='dashed', linewidth=1)
 		plt.axvline(np.median(np.abs(energy_error)), color='blue', linestyle='dashed', linewidth=1)
 		plt.show(); plt.clf()
@@ -390,3 +307,42 @@ else:
 		plt.axvline(np.mean(np.abs(target_energy_error)), color='red', linestyle='dashed', linewidth=1)
 		plt.axvline(np.median(np.abs(target_energy_error)), color='blue', linestyle='dashed', linewidth=1)
 		plt.show(); plt.clf()
+
+		# Temperature plot - Figure 5
+		t = range(1,198)
+		plt.plot(t, Time_TZ_target[:-2], color='black', linestyle='solid', label='$T_{\parallel}^{Ground Truth}$')
+		plt.plot(t, Time_TR_target[:-2], color='black', linestyle='solid', label='$T_{\perp}^{Ground Truth}$')
+		plt.plot(t, Time_TZ[:-2], color='red', linestyle='--', label='$T_{\parallel}$')
+		plt.plot(t, Time_TR[:-2], color='blue', linestyle='--', label='$T_{\perp}$')
+		plt.xlabel('Time Step')
+		plt.ylabel('Temperature [eV]')
+		plt.legend()
+		plt.show()
+		plt.xlabel('Time Step')
+		plt.ylabel('Temperature [eV]')
+		Differ_one = np.array(Time_TZ_target[:-2])-np.array(Time_TZ[:-2])
+		Differ_two = np.array(Time_TR_target[:-2])-np.array(Time_TR[:-2])
+		print(np.max(np.abs(Differ_one)))
+		print(np.max(np.abs(Differ_two)))
+		t = range(1,200)
+		plt.plot(t, Time_TZ2, color='#6515E8', linestyle='--', label='1.98$T_{\parallel}$')
+		plt.plot(t, Time_TR2, color='#FFBE3F', linestyle='--', label='1.98$T_{\perp}$')
+		plt.plot(t, Time_TZ_target2, color='#6515E8', linestyle='solid', label='1.98$T_{\parallel}^{Ground Truth}$')
+		plt.plot(t, Time_TR_target2, color='#FFBE3F', linestyle='solid', label='1.98$T_{\perp}^{Ground Truth}$')
+		plt.legend()
+		plt.show()
+
+		# time series plot - Figure 6	
+		t = range(1,200)
+		plt.plot(t, Time_energy, color='#6515E8', linestyle='--', label='$T_{\parallel}/T_{\perp}=0.795, E$')
+		plt.plot(t, Time_density, color='#FFBE3F', linestyle='--', label='$T_{\parallel}/T_{\perp}=0.795, n$')
+		plt.plot(t, Time_momentum, color='#FF0074', linestyle='--', label='$T_{\parallel}/T_{\perp}=0.795, P$')
+		plt.plot(t, Time_energy2, color='#6515E8', linestyle='solid', label='$T_{\parallel}/T_{\perp}=1.98, E$')
+		plt.plot(t, Time_density2, color='#FFBE3F', linestyle='solid', label='$T_{\parallel}/T_{\perp}=1.98, n$')
+		plt.plot(t, Time_momentum2, color='#FF0074', linestyle='solid', label='$T_{\parallel}/T_{\perp}=1.98, P$')
+		plt.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
+		plt.axis([0,200,0,0.0006])
+		plt.legend()
+		plt.xlabel('Time Step')
+		plt.ylabel('Error')
+		plt.show()

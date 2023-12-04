@@ -1,10 +1,10 @@
-# import libraries
+# Develped by Hyeongjun Noh - submission for Nature communication, December, 2023.
+# This code is private and not intended for public distribution. 
+# Any unauthorized actions including sharing, distribution, or modification without the explicit permission of the author are strictly prohibited.
+# Hyeongjun Noh nhj12074@unist.ac.kr, Jimin Lee jiminlee@unist.ac.kr, Eisung Yoon esyoon@unist.ac.kr
 import os
 import numpy as np
-#import copy
-
 import torch
-#import torch.nn as nn
 
 torch.set_default_dtype(torch.float64)
 class EarlyStopping:
@@ -93,9 +93,10 @@ def diagnosis(diff_T_factor):
 	[mesh_Z, mesh_R]=np.meshgrid(mesh_z,mesh_r) #For mesh figure : 40x60 double
 
 	dist_initial_ref = density*np.exp(-mesh_Z**2/(2*v_th_z**2) - mesh_R**2/(v_th_r**2)) / (np.sqrt(2*np.pi)*np.pi*(v_th_r**2)*v_th_z) #Bi-Maxwellian
-
 	dist = dist_initial_ref
 
+	vol = 2*np.pi*mesh_r[None].T*np.ones((1,mesh_Nz))*mesh_dr*mesh_dz # vol : for RHS : 2 pi r dr dz
+	vol[0,] = 0.25*np.pi*(mesh_dr**2)*mesh_dz
 	numeric_T = mass*(((mesh_R**2 + mesh_Z**2)*dist*vol).sum(axis=0)).sum(axis=0) / (3*echarge*density)
 	T_overall = numeric_T
 	Coulomb_log= 23 - np.log(np.sqrt(2*density*1e-6/T_overall)/T_overall)
@@ -149,9 +150,10 @@ def diagnosis_noTorch(diff_T_factor):
 	[mesh_Z, mesh_R]=np.meshgrid(mesh_z,mesh_r) #For mesh figure : 40x60 double
 
 	dist_initial_ref = density*np.exp(-mesh_Z**2/(2*v_th_z**2) - mesh_R**2/(v_th_r**2)) / (np.sqrt(2*np.pi)*np.pi*(v_th_r**2)*v_th_z) #Bi-Maxwellian
-
 	dist = dist_initial_ref
 
+	vol = 2*np.pi*mesh_r[None].T*np.ones((1,mesh_Nz))*mesh_dr*mesh_dz # vol : for RHS : 2 pi r dr dz
+	vol[0,] = 0.25*np.pi*(mesh_dr**2)*mesh_dz
 	numeric_T = mass*(((mesh_R**2 + mesh_Z**2)*dist*vol).sum(axis=0)).sum(axis=0) / (3*echarge*density)
 	T_overall = numeric_T
 	Coulomb_log= 23 - np.log(np.sqrt(2*density*1e-6/T_overall)/T_overall)
@@ -201,9 +203,10 @@ def WTdiagnosis(diff_T_factor):
 	[mesh_Z, mesh_R]=np.meshgrid(mesh_z,mesh_r) #For mesh figure : 40x60 double
 
 	dist_initial_ref = density*np.exp(-mesh_Z**2/(2*v_th_z**2) - mesh_R**2/(v_th_r**2)) / (np.sqrt(2*np.pi)*np.pi*(v_th_r**2)*v_th_z) #Bi-Maxwellian
-
 	dist = dist_initial_ref
 
+	vol = 2*np.pi*mesh_r[None].T*np.ones((1,mesh_Nz))*mesh_dr*mesh_dz # vol : for RHS : 2 pi r dr dz
+	vol[0,] = 0.25*np.pi*(mesh_dr**2)*mesh_dz
 	numeric_T = mass*(((mesh_R**2 + mesh_Z**2)*dist*vol).sum(axis=0)).sum(axis=0) / (3*echarge*density)
 	T_overall = numeric_T
 	Coulomb_log= 23 - np.log(np.sqrt(2*density*1e-6/T_overall)/T_overall)
