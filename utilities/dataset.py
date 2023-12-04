@@ -1,6 +1,6 @@
 import os
 import numpy as np
-from util import *
+from utilities.util import *
 
 import torch
 #import torch.nn as nn
