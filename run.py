@@ -12,7 +12,7 @@ import torch
 import torch.nn as nn
 
 from torch.utils.data import DataLoader
-from torch.utils.tensorboard import SummaryWriter
+#from torch.utils.tensorboard import SummaryWriter
 
 from utilities.model import UNet
 from utilities.dataset import *
@@ -21,17 +21,18 @@ from utilities.util import *
 import matplotlib.pyplot as plt
 #from matplotlib.ticker import ScalarFormatter
 
-from torchvision import transforms, datasets
+from torchvision import transforms
+#, datasets
 
-import time
+#import time
 from tqdm import tqdm
 
-import smtplib
-from email.mime.text import MIMEText
+#import smtplib
+#from email.mime.text import MIMEText
 
 torch.set_default_dtype(torch.float64)
 # Parser
-parser = argparse.ArgumentParser(description="Train the UNet", 
+parser = argparse.ArgumentParser(description="Run FPL-net", 
                                 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
 #parser.add_argument("--name", default='0727_64', type=str, dest="名前")
@@ -46,7 +47,7 @@ parser.add_argument("--num_epoch", default=5000, type=int, dest="num_epoch")
 #parser.add_argument("--train_continue", default="on", type=str, dest="train_continue")
 #parser.add_argument("--gpu_parallel", default="off", type=str, dest="gpu_parallel")
 parser.add_argument("--gpu_num", default="0", type=int, dest="gpu_num")
-parser.add_argument("--early_stopping", default="5000", type=int, dest="early_stopping")
+#parser.add_argument("--early_stopping", default="5000", type=int, dest="early_stopping")
 
 args = parser.parse_args()
 
@@ -62,7 +63,7 @@ num_epoch = args.num_epoch
 #train_continue = args.train_continue
 #gpu_parallel = args.gpu_parallel
 GPU_NUM = args.gpu_num
-patience = args.early_stopping
+#patience = args.early_stopping
 
 device = torch.device(f'cuda:{GPU_NUM}' if torch.cuda.is_available() else 'cpu')
 '''
@@ -78,12 +79,12 @@ result_dir = os.path.join(data_dir, result_list[-1])
 
 ckpt_dir = './utilities/model_epoch1150.pth'
 result_dir = './result'
-"""
+
 # Make dir
 if not os.path.exists(result_dir):
 	os.makedirs(os.path.join(result_dir, 'png'))
 	os.makedirs(os.path.join(result_dir, 'numpy'))
-"""
+
 
 transform = transforms.Compose([Normalization(min=0.00, max=770.0), ToTensor()])
 dataset_test = Dataset(data_dir='./dataset', transform=transform)
@@ -133,7 +134,7 @@ st_epoch = 0
 MSE_best = 10000.0
 
 # Initializing early_stopping object
-early_stopping = EarlyStopping(patience = patience, verbose = False)
+#early_stopping = EarlyStopping(patience = patience, verbose = False)
 
 # Train mode
 if MSE_best == -4259545677:
@@ -172,7 +173,7 @@ else:
 		Time_TR = []
 		Time_TZ_target = []
 		Time_TR_target = []
-		nanamae = 'hello'
+		nanamae = 'ichi'
 		Time_energy2 = []
 		Time_momentum2 = []
 		Time_density2 = []
@@ -180,7 +181,7 @@ else:
 		Time_TR2 = []
 		Time_TZ_target2 = []
 		Time_TR_target2 = []
-		nanamae2 = 'hello'
+		nanamae2 = 'ni'
 		for batch, data in tqdm(enumerate(loader_test, 1), desc='Test'):
 			# forward pass
 			Tlabel_ori = data['label'].to(device)
