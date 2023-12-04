@@ -19,7 +19,7 @@ $ pip install -r requirements.txt
 ```
 $ python run.py
 ```
-This will make new file name <result> and you can get the result of Figure 4, Figure 5, and Figure 6.
+This will make new file name result and you can get the result of Figure 4, Figure 5, and Figure 6.
 This code loads trained model and run the model with test datasets.
 Then, run
 ```
