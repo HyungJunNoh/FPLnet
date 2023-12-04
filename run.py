@@ -74,7 +74,7 @@ ckpt_dir = os.path.join(data_dir, ckpt_list[-1])
 result_dir = os.path.join(data_dir, result_list[-1])
 '''
 
-ckpt_dir = './utilities/model_epoch1150.pth'
+ckpt_dir = './utilities'
 result_dir = './result'
 
 # Make dir

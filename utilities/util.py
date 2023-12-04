@@ -45,14 +45,12 @@ def load(ckpt_dir, net, optim, MSE_best):
 		MSE_best = 10000.0
 		return net, optim, epoch, MSE_best
 
-	ckpt_lst = os.listdir(ckpt_dir)
-	ckpt_lst.sort(key=lambda f: int(''.join(filter(str.isdigit, f))))
-
-	dict_model = torch.load('./%s/%s' % (ckpt_dir, ckpt_lst[-1]))
+	ckpt_lst = 'model_epoch1150.pth'
+	dict_model = torch.load('./%s/%s' % (ckpt_dir, ckpt_lst))
 
 	net.load_state_dict(dict_model['net'])
 	optim.load_state_dict(dict_model['optim'])
-	epoch = int(ckpt_lst[-1].split('epoch')[1].split('.pth')[0])
+	epoch = int(ckpt_lst.split('epoch')[1].split('.pth')[0])
 	MSE_best = dict_model['MSE_best']
 
 	return net, optim, epoch, MSE_best
