@@ -35,8 +35,6 @@ torch.set_default_dtype(torch.float64)
 parser = argparse.ArgumentParser(description="Run FPL-net", 
                                 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-#parser.add_argument("--name", default='0727_64', type=str, dest="名前")
-
 parser.add_argument("--lr", default=0.0005, type=float, dest="lr")
 parser.add_argument("--batch_size", default=199, type=int, dest="batch_size")
 parser.add_argument("--num_epoch", default=5000, type=int, dest="num_epoch")
@@ -56,7 +54,6 @@ lr = args.lr
 batch_size = args.batch_size
 num_epoch = args.num_epoch
 
-#名前 = args.名前
 #data_dir = args.data_dir
 
 #mode = args.mode
