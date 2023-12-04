@@ -8,6 +8,7 @@ $ cd FPLnet
 ```
 
 # Requirements
+- Developed under Python 3.8.10, recommend Python 3.6.0 or above. 
 - You can pip install by
 ```
 $ pip install -r requirements.txt
