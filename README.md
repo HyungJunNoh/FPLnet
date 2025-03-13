@@ -30,3 +30,4 @@ This displays two results in result file. You will get the result of Figure 7.
 # Acknowledgement
  Develped by -
  Hyeongjun Noh nhj12074@unist.ac.kr, Jimin Lee jiminlee@unist.ac.kr, and Eisung Yoon esyoon@unist.ac.kr
+ * H.J. Noh, et al. "FPL-net: A deep learning framework for solving the nonlinear Fokker–Planck–Landau collision operator for anisotropic temperature relaxation." Journal of Computational Physics 523 (15) (2025): 113665.
